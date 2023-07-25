@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"  # Porta para comunicação com o RabbitMQ
+      - "15672:15672"  # Porta para a interface de gerenciamento (usuário: guest, senha: guest)
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/mnesia
+      - rabbitmq_logs:/var/log/rabbitmq
+      - ./plugins:/plugins
+    environment:
+      - RABBITMQ_DEFAULT_USER=myuser
+      - RABBITMQ_DEFAULT_PASS=mypassword
+    command: sh -c "rabbitmq-server --loopback_users=none & sleep 10 && rabbitmq-plugins enable rabbitmq_delayed_message_exchange"
+
+volumes:
+  rabbitmq_data:
+  rabbitmq_logs:
